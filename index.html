@@ -4,66 +4,114 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BitLinks - Redefining Software Creation with AI</title>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    :root{
+      --bg1:#0d5c5c;
+      --bg2:#1a8b8b;
+      --bg3:#2da9a9;
+
+      --glass: rgba(255,255,255,0.10);
+      --glass2: rgba(255,255,255,0.14);
+      --stroke: rgba(255,255,255,0.18);
+
+      --text: rgba(255,255,255,0.96);
+      --muted: rgba(255,255,255,0.82);
+
+      --shadow: 0 18px 70px rgba(0,0,0,0.22);
+      --shadow2: 0 14px 50px rgba(0,0,0,0.22);
+
+      --green1:#2d8b3c;
+      --green2:#3aa84d;
+      --greenGlow: rgba(45, 139, 60, 0.35);
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #0d5c5c 0%, #1a8b8b 50%, #2da9a9 100%);
+      background: radial-gradient(1100px 650px at 20% 10%, rgba(255,255,255,0.12), transparent 55%),
+                  radial-gradient(900px 600px at 85% 25%, rgba(255,255,255,0.10), transparent 55%),
+                  linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 50%, var(--bg3) 100%);
       color: #fff;
       overflow-x: hidden;
+    }
+
+    /* Subtle floating blobs behind everything */
+    body::before, body::after{
+      content:"";
+      position: fixed;
+      inset: -150px;
+      z-index: 0;
+      pointer-events:none;
+      filter: blur(40px);
+      opacity: 0.35;
+      background:
+        radial-gradient(420px 320px at 20% 25%, rgba(255,255,255,0.25), transparent 70%),
+        radial-gradient(520px 420px at 80% 35%, rgba(255,255,255,0.22), transparent 70%),
+        radial-gradient(420px 420px at 55% 80%, rgba(255,255,255,0.18), transparent 70%);
+      animation: drift 10s ease-in-out infinite alternate;
+    }
+    body::after{
+      opacity: 0.24;
+      animation-duration: 14s;
+      transform: scale(1.06);
+    }
+    @keyframes drift{
+      from { transform: translate3d(-10px, -8px, 0) scale(1); }
+      to   { transform: translate3d(12px, 10px, 0) scale(1.02); }
     }
 
     .canvas-container {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      z-index: 0;
+      z-index: 1;
+      pointer-events: none;
     }
-
     canvas { display: block; }
 
     .content {
       position: relative;
-      z-index: 1;
+      z-index: 2;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
     header {
-      padding: 25px 40px;
+      padding: 22px 40px;
       display: flex;
       align-items: center;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .logo-container {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 14px;
     }
 
-    /* === UPDATED LOGO SIZING (BitLinks logo) === */
     .logo-icon {
-      width: 44px;          /* resized */
-      height: 44px;         /* resized */
-      background: #fff;
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.92);
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
       animation: fadeIn 0.6s ease-out;
-      overflow: hidden;     /* ensures img stays inside rounded corners */
+      border: 1px solid rgba(255,255,255,0.65);
     }
 
     .logo-icon img {
       width: 100%;
       height: 100%;
-      object-fit: contain;  /* use "cover" if you want it to fill by cropping */
+      object-fit: contain;
       display: block;
     }
 
@@ -73,12 +121,12 @@
     }
 
     .logo-text {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
       color: #fff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      animation: fadeIn 0.6s ease-out 0.2s both;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      animation: fadeIn 0.6s ease-out 0.15s both;
     }
 
     main {
@@ -87,120 +135,151 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 60px 20px;
-      max-width: 1000px;
+      padding: 70px 20px 50px;
+      max-width: 1050px;
       margin: 0 auto;
     }
 
     .hero-section {
       text-align: center;
-      margin-bottom: 60px;
-      animation: fadeInUp 0.8s ease-out 0.3s both;
+      margin-bottom: 26px;
+      animation: fadeInUp 0.85s ease-out 0.2s both;
     }
 
     .hero-title {
-      font-size: 56px;
-      font-weight: 800;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #fff 0%, #b3e5e5 100%);
+      font-size: 58px;
+      font-weight: 900;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, #ffffff 0%, #bdf3f3 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      line-height: 1.2;
+      line-height: 1.1;
     }
 
     .hero-subtitle {
-      font-size: 22px;
-      color: rgba(255, 255, 255, 0.9);
+      font-size: 20px;
+      color: var(--muted);
       font-weight: 300;
-      max-width: 700px;
+      max-width: 740px;
       margin: 0 auto;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     .intro-text {
       text-align: center;
-      margin-bottom: 50px;
-      animation: fadeInUp 0.8s ease-out 0.5s both;
-      max-width: 800px;
+      margin: 22px 0 46px;
+      animation: fadeInUp 0.85s ease-out 0.35s both;
+      max-width: 820px;
     }
 
     .intro-text p {
-      font-size: 19px;
-      line-height: 1.8;
-      color: rgba(255, 255, 255, 0.95);
+      font-size: 18px;
+      line-height: 1.9;
+      color: var(--text);
       font-weight: 300;
     }
 
     .content-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 30px;
+      gap: 26px;
       width: 100%;
-      margin-bottom: 50px;
-    }
-
-    .value-proposition {
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(15px);
-      border-radius: 24px;
-      padding: 45px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      animation: fadeInUp 0.8s ease-out;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .value-proposition:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+      margin-bottom: 38px;
     }
 
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
+      from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .value-proposition {
-      animation-delay: 0.7s;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+    /* ===== BETTER CRAFTAPP CARD ===== */
+
+    .craftapp-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      padding: 36px 34px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background:
+        radial-gradient(800px 240px at 20% 0%, rgba(255,255,255,0.18), transparent 60%),
+        linear-gradient(135deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.08) 100%);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow2);
+      animation: fadeInUp 0.85s ease-out 0.55s both;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
 
-    .value-proposition p {
-      font-size: 18px;
-      line-height: 1.8;
-      color: rgba(255, 255, 255, 0.95);
+    .craftapp-card::before {
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border-radius: 28px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.35), rgba(255,255,255,0.06));
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      opacity: 0.9;
+      pointer-events:none;
     }
 
-    .value-proposition h2 {
-      font-size: 32px;
-      margin-bottom: 15px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .craftapp-card::after{
+      content:"";
+      position:absolute;
+      width: 420px;
+      height: 320px;
+      right: -180px;
+      top: -160px;
+      background: radial-gradient(circle at 30% 30%, rgba(58,168,77,0.45), transparent 60%);
+      filter: blur(2px);
+      opacity: 0.75;
+      pointer-events:none;
+      transform: rotate(8deg);
     }
 
-    /* === UPDATED LOGO SIZING (CraftApp logo) === */
+    .craftapp-card:hover{
+      transform: translateY(-6px);
+      box-shadow: 0 22px 85px rgba(0,0,0,0.28);
+      border-color: rgba(255,255,255,0.26);
+    }
+
+    .craftapp-card-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .craftapp-left{
+      display:flex;
+      align-items:center;
+      gap: 14px;
+      min-width: 0;
+    }
+
     .craftapp-logo {
-      width: 56px;           /* resized */
-      height: 56px;          /* resized */
-      background: linear-gradient(135deg, #2d8b3c 0%, #3aa84d 100%);
-      border-radius: 14px;
+      width: 58px;
+      height: 58px;
+      background: linear-gradient(135deg, var(--green1) 0%, var(--green2) 100%);
+      border-radius: 16px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 25px rgba(45, 139, 60, 0.5);
-      animation: float 3s ease-in-out infinite;
+      box-shadow: 0 10px 32px var(--greenGlow);
       flex-shrink: 0;
-      overflow: hidden;      /* ensures img stays inside rounded corners */
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.22);
+      animation: float 3s ease-in-out infinite;
     }
 
     .craftapp-logo img {
       width: 100%;
       height: 100%;
-      object-fit: contain;   /* use "cover" if you want it to fill by cropping */
+      object-fit: contain;
       display: block;
     }
 
@@ -209,37 +288,148 @@
       50%      { transform: translateY(-5px); }
     }
 
-    .sparkle {
-      display: inline-block;
-      animation: sparkle 2s ease-in-out infinite;
+    .craftapp-title-wrap{
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
     }
 
-    @keyframes sparkle {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.7; transform: scale(1.1); }
+    .craftapp-title{
+      font-size: 30px;
+      font-weight: 850;
+      letter-spacing: -0.4px;
+      line-height: 1.1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .craftapp-badge-row{
+      display:flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(10px);
+      user-select:none;
+    }
+
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.12);
+    }
+
+    .craftapp-actions{
+      display:flex;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .btn-secondary{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      text-decoration:none;
+      color: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      font-weight: 750;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .btn-secondary:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.14);
+      border-color: rgba(255,255,255,0.26);
+    }
+
+    .craftapp-body{
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      margin-top: 14px;
+    }
+
+    .craftapp-desc{
+      color: rgba(255,255,255,0.94);
+      font-size: 17px;
+      line-height: 1.85;
+      font-weight: 320;
+    }
+
+    .mini-stats{
+      display:flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .stat{
+      padding: 14px 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.16);
+    }
+
+    .stat .k{
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.72);
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .stat .v{
+      font-size: 15px;
+      font-weight: 750;
+      color: rgba(255,255,255,0.92);
+      line-height: 1.3;
     }
 
     .cta {
-      margin-top: 20px;
-      animation: fadeInUp 0.8s ease-out 0.9s both;
+      margin-top: 12px;
+      animation: fadeInUp 0.85s ease-out 0.75s both;
     }
 
     .cta-button {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      padding: 20px 55px;
+      padding: 18px 52px;
       background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
       color: #1a8b8b;
       text-decoration: none;
-      border-radius: 50px;
-      font-size: 19px;
-      font-weight: 700;
-      box-shadow: 0 12px 45px rgba(0, 0, 0, 0.25);
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
+      border-radius: 999px;
+      font-size: 18px;
+      font-weight: 800;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
       position: relative;
       overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.25);
     }
 
     .cta-button::before {
@@ -249,82 +439,56 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-      transition: left 0.5s ease;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+      transition: left 0.55s ease;
     }
-
     .cta-button:hover::before { left: 100%; }
 
     .cta-button:hover {
       transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
     }
 
-    .arrow {
-      font-size: 20px;
-      transition: transform 0.3s ease;
-    }
-
-    .cta-button:hover .arrow { transform: translateX(5px); }
+    .arrow { font-size: 20px; transition: transform 0.25s ease; }
+    .cta-button:hover .arrow { transform: translateX(6px); }
 
     footer {
-      padding: 35px 20px;
+      padding: 32px 20px;
       text-align: center;
       font-size: 14px;
       color: rgba(255, 255, 255, 0.7);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0.10);
     }
 
-    .features-preview {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 30px;
-      flex-wrap: wrap;
+    @media (max-width: 900px){
+      .craftapp-body{ grid-template-columns: 1fr; }
+      .craftapp-actions{ display:none; }
     }
-
-    .feature-tag {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 10px 20px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      animation: fadeIn 1s ease-out both;
-    }
-
-    .feature-tag:nth-child(1) { animation-delay: 1.1s; }
-    .feature-tag:nth-child(2) { animation-delay: 1.2s; }
-    .feature-tag:nth-child(3) { animation-delay: 1.3s; }
 
     @media (max-width: 768px) {
-      header { padding: 20px 25px; }
+      header { padding: 18px 22px; }
 
-      /* UPDATED mobile logo sizes */
       .logo-icon { width: 38px; height: 38px; }
-
       .logo-text { font-size: 24px; }
 
-      .hero-title { font-size: 36px; }
+      main { padding: 50px 18px 40px; }
+
+      .hero-title { font-size: 40px; }
       .hero-subtitle { font-size: 18px; }
 
       .intro-text p { font-size: 16px; }
 
-      main { padding: 40px 20px; }
+      .craftapp-card{ padding: 28px 22px; }
+      .craftapp-logo{ width: 50px; height: 50px; }
 
-      .value-proposition { padding: 30px 25px; }
-      .value-proposition p { font-size: 16px; }
-      .value-proposition h2 { font-size: 26px; }
-
-      /* UPDATED mobile craftapp logo size */
-      .craftapp-logo { width: 48px; height: 48px; }
+      .craftapp-title{ font-size: 24px; }
 
       .cta-button { padding: 16px 40px; font-size: 17px; }
+    }
 
-      .features-preview { gap: 15px; }
-      .feature-tag { font-size: 12px; padding: 8px 16px; }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
   </style>
 </head>
@@ -347,6 +511,7 @@
     <main>
       <section class="hero-section">
         <h1 class="hero-title">Redefining Software Creation</h1>
+        <p class="hero-subtitle">Transform your ideas into reality with the power of AI</p>
       </section>
 
       <div class="intro-text">
@@ -358,17 +523,52 @@
       </div>
 
       <div class="content-grid">
-        <section class="value-proposition">
-          <h2>
-            <div class="craftapp-logo">
-              <img src="./assets/craftapp.jpg" alt="craftapp logo" />
+        <!-- BETTER CARD -->
+        <section class="craftapp-card" id="craftapp" aria-label="CraftApp card">
+          <div class="craftapp-card-header">
+            <div class="craftapp-left">
+              <div class="craftapp-logo" aria-hidden="true">
+                <img src="./assets/craftapp.jpg" alt="CraftApp logo" />
+              </div>
+
+              <div class="craftapp-title-wrap">
+                <div class="craftapp-title">Discover CraftApp</div>
+                <div class="craftapp-badge-row">
+                  <span class="pill"><span class="dot"></span> Full-stack</span>
+                  <span class="pill"><span class="dot"></span> Web + Mobile</span>
+                  <span class="pill"><span class="dot"></span> AI-powered</span>
+                </div>
+              </div>
             </div>
-            Discover CraftApp
-          </h2>
-          <p>
-            CraftApp is our flagship platform that empowers you to build robust web and mobile applications with AI,
-            effortlessly.
-          </p>
+
+            <div class="craftapp-actions">
+              <a class="btn-secondary" href="#craftapp">Learn more</a>
+              <a class="btn-secondary" href="#craftapp">Docs</a>
+            </div>
+          </div>
+
+          <div class="craftapp-body">
+            <p class="craftapp-desc">
+              CraftApp is our flagship platform that lets you build robust web and mobile applications with AI —
+              from idea to production-ready code. Describe what you want, and CraftApp generates and refines the full
+              experience: UI, backend APIs, and deployment-ready structure.
+            </p>
+
+            <div class="mini-stats" aria-label="CraftApp highlights">
+              <div class="stat">
+                <div class="k">Speed</div>
+                <div class="v">From prompt to app in minutes</div>
+              </div>
+              <div class="stat">
+                <div class="k">Quality</div>
+                <div class="v">Clean UI + scalable backend</div>
+              </div>
+              <div class="stat">
+                <div class="k">Control</div>
+                <div class="v">Iterate with AI, keep ownership</div>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
 
@@ -405,15 +605,12 @@
         this.vy = (Math.random() - 0.5) * 0.6;
         this.radius = Math.random() * 2 + 1;
       }
-
       update() {
         this.x += this.vx;
         this.y += this.vy;
-
         if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
         if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
       }
-
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -424,9 +621,7 @@
 
     function init() {
       dots = [];
-      for (let i = 0; i < dotCount; i++) {
-        dots.push(new Dot());
-      }
+      for (let i = 0; i < dotCount; i++) dots.push(new Dot());
     }
 
     function connectDots() {
@@ -435,7 +630,6 @@
           const dx = dots[i].x - dots[j].x;
           const dy = dots[i].y - dots[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
-
           if (distance < maxDistance) {
             ctx.beginPath();
             ctx.strokeStyle = `rgba(255, 255, 255, ${0.25 * (1 - distance / maxDistance)})`;
@@ -450,20 +644,12 @@
 
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      dots.forEach(dot => {
-        dot.update();
-        dot.draw();
-      });
-
+      dots.forEach(dot => { dot.update(); dot.draw(); });
       connectDots();
       requestAnimationFrame(animate);
     }
 
-    window.addEventListener('resize', () => {
-      resize();
-      init();
-    });
+    window.addEventListener('resize', () => { resize(); init(); });
 
     resize();
     init();
